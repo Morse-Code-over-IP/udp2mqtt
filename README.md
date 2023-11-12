@@ -1,5 +1,7 @@
 # udp2mqtt
 
+# Installation
++ Install and upgrade deps `pip3 install -r requirements.txt -U`
 
 
 # Free accounts
