@@ -2,6 +2,7 @@
 
 # Installation
 + Install and upgrade deps `pip3 install -r requirements.txt -U`
++ Install and upgrade deps `pip3 install -r requirements-test.txt -U`
 
 
 # Free accounts
