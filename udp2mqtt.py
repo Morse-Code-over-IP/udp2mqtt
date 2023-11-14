@@ -6,6 +6,7 @@ from mopp import *
 import config
 import socket
 import time
+import sys
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s', )
 
@@ -20,30 +21,36 @@ client_socket.send(mopp.mopp(20,'hi')) # Register chat server
 
 def on_connect(mqttc, obj, flags, rc):
     print("rc: " + str(rc))
+    sys.stdout.flush() # TODO: use logging
 
 def on_message(mqttc, obj, msg):
     print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
     r = mopp.decode_message(msg.payload)
     print (r)
+    sys.stdout.flush() # TODO: use logging
 
     client_socket.send(msg.payload)
 
 def on_publish(mqttc, obj, mid):
     print("mid: " + str(mid))
+    sys.stdout.flush() # TODO: use logging
     pass
 
 def on_subscribe(mqttc, obj, mid, granted_qos):
     print("Subscribed: " + str(mid) + " " + str(granted_qos))
+    sys.stdout.flush() # TODO: use logging
 
 def on_log(mqttc, obj, level, string):
     print(string)
+    sys.stdout.flush() # TODO: use logging
 
 
 
 
 # MQTT
 print ("Connecting to MQTT")
+sys.stdout.flush() # TODO: use logging
 mqttc = paho.Client()
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
@@ -64,6 +71,7 @@ while KeyboardInterrupt:
     client = addr[0] + ':' + str(addr[1])
     r = mopp.decode_message(data_bytes)
     print (r)
+    sys.stdout.flush() # TODO: use logging
     
     # Beep if message received
     if not "Keepalive" in r:
