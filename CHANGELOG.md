@@ -1,3 +1,4 @@
+0.0.6 - topic changed
 0.0.5 - name of chatserver for connection
 0.0.4 - bidirectional relais
 0.0.3 - demonstrator for udp2mqtt relais and docker file
