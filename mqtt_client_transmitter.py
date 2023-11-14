@@ -43,10 +43,8 @@ mqttc.connect(config.MQTT_HOST, config.MQTT_PORT, 60)
 mqttc.loop_start()
 
 infot = mqttc.publish(config.TOPIC, mopp.mopp(20,'hi'), qos=2)
-#infot = mqttc.publish(config.TOPIC, mopp.mopp(20,'hihio'), qos=2)
-infot = mqttc.publish(config.TOPIC, mopp.mopp(20,'hi'), qos=2)
-infot = mqttc.publish(config.TOPIC, mopp.mopp(20,'m'), qos=2)
-#infot = mqttc.publish(config.TOPIC, mopp.mopp(20,'this is a test'), qos=2)
+infot = mqttc.publish(config.TOPIC, mopp.mopp(30,'hi'), qos=2)
+infot = mqttc.publish(config.TOPIC, mopp.mopp(15,'m'), qos=2)
 
 infot.wait_for_publish()
 
