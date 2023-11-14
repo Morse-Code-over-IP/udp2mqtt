@@ -41,6 +41,6 @@ mqttc.on_publish = on_publish
 mqttc.on_subscribe = on_subscribe
 
 mqttc.connect(config.MQTT_HOST, config.MQTT_PORT, 60)
-mqttc.subscribe("m32_test", 0)
+mqttc.subscribe(config.TOPIC, 0)
 
 mqttc.loop_forever()

@@ -42,11 +42,11 @@ mqttc.on_subscribe = on_subscribe
 mqttc.connect(config.MQTT_HOST, config.MQTT_PORT, 60)
 mqttc.loop_start()
 
-infot = mqttc.publish("m32_test", mopp.mopp(20,'hi'), qos=2)
-#infot = mqttc.publish("m32_test", mopp.mopp(20,'hihio'), qos=2)
-infot = mqttc.publish("m32_test", mopp.mopp(20,'hi'), qos=2)
-infot = mqttc.publish("m32_test", mopp.mopp(20,'m'), qos=2)
-#infot = mqttc.publish("m32_test", mopp.mopp(20,'this is a test'), qos=2)
+infot = mqttc.publish(config.TOPIC, mopp.mopp(20,'hi'), qos=2)
+#infot = mqttc.publish(config.TOPIC, mopp.mopp(20,'hihio'), qos=2)
+infot = mqttc.publish(config.TOPIC, mopp.mopp(20,'hi'), qos=2)
+infot = mqttc.publish(config.TOPIC, mopp.mopp(20,'m'), qos=2)
+#infot = mqttc.publish(config.TOPIC, mopp.mopp(20,'this is a test'), qos=2)
 
 infot.wait_for_publish()
 
