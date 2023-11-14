@@ -6,16 +6,17 @@ import logging
 from mopp import * 
 import config
 import socket
-import logging
 import time
-from mopp import * 
-from beep import *
-import config
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s', )
 
 mopp = Mopp()
 
+# UDP
+print ("Connecting to UDP")
+client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+client_socket.connect((config.SERVER_IP, config.UDP_PORT))  # connect to the server
+client_socket.send(mopp.mopp(20,'hi')) # Register chat server
 
 
 def on_connect(mqttc, obj, flags, rc):
@@ -26,6 +27,9 @@ def on_message(mqttc, obj, msg):
 
     r = mopp.decode_message(msg.payload)
     print (r)
+
+    client_socket.send(msg.payload)
+
 
 def on_publish(mqttc, obj, mid):
     print("mid: " + str(mid))
@@ -38,6 +42,8 @@ def on_log(mqttc, obj, level, string):
     print(string)
 
 
+
+
 # MQTT
 print ("Connecting to MQTT")
 mqttc = paho.Client()
@@ -46,20 +52,15 @@ mqttc.on_connect = on_connect
 mqttc.on_publish = on_publish
 mqttc.on_subscribe = on_subscribe
 mqttc.connect(config.MQTT_HOST, config.MQTT_PORT, 60)
+mqttc.subscribe("m32_test", 0)
 mqttc.loop_start()
-
-
-# UDP
-print ("Connecting to UDP")
-client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-client_socket.connect((config.SERVER_IP, config.UDP_PORT))  # connect to the server
-client_socket.send(mopp.mopp(20,'hi')) # Register chat server
 
 last_r = {} # keep track of duplicate messages...
 
 # Main loop
 while KeyboardInterrupt:
   time.sleep(0.2)						# anti flood
+
   try:
     data_bytes, addr = client_socket.recvfrom(64)
     client = addr[0] + ':' + str(addr[1])
