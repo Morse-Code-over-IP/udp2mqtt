@@ -1,8 +1,5 @@
 version: '3'
 services:
   udp2mqtt:
-    #image: ghcr.io/morse-code-over-ip/chatserver-mopp-udp:latest
-    build: .
+    image: ghcr.io/morse-code-over-ip/udp2mqtt:latest
     restart: always
-volumes:
-  logfile:
