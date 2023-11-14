@@ -1,5 +1,4 @@
 #!/usr/local/bin/python3
-# Simple transmitter
 
 import paho.mqtt.client as paho
 import logging
@@ -30,7 +29,6 @@ def on_message(mqttc, obj, msg):
 
     client_socket.send(msg.payload)
 
-
 def on_publish(mqttc, obj, mid):
     print("mid: " + str(mid))
     pass
@@ -52,7 +50,7 @@ mqttc.on_connect = on_connect
 mqttc.on_publish = on_publish
 mqttc.on_subscribe = on_subscribe
 mqttc.connect(config.MQTT_HOST, config.MQTT_PORT, 60)
-mqttc.subscribe("m32_test", 0)
+mqttc.subscribe(config.TOPIC, 0)
 mqttc.loop_start()
 
 last_r = {} # keep track of duplicate messages...
@@ -75,7 +73,7 @@ while KeyboardInterrupt:
             last_r = r
 
             # And send mqtt
-            infot = mqttc.publish("m32_test", data_bytes, qos=2)
+            infot = mqttc.publish(config.TOPIC, data_bytes, qos=2)
             infot.wait_for_publish()
     
 
