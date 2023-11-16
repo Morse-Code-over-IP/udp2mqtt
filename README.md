@@ -7,6 +7,7 @@
 # Durations testing
 mosquitto_pub -h broker.hivemq.com -t  /moip/udp2mqtt/durations -m '{ "durations": [60, -60, 180, -60, 180, -60] }'
 
+mosquitto_sub -h broker.hivemq.com -t  /moip/udp2mqtt/durations
 
 # Free accounts
 # https://mntolia.com/10-free-public-private-mqtt-brokers-for-testing-prototyping/

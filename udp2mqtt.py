@@ -7,6 +7,7 @@ import config
 import socket
 import time
 import sys
+from beep import *
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s', )
 
@@ -58,6 +59,7 @@ mqttc.on_publish = on_publish
 mqttc.on_subscribe = on_subscribe
 mqttc.connect(config.MQTT_HOST, config.MQTT_PORT, 60)
 mqttc.subscribe(config.TOPIC, 0)
+# FIXME: Listen to durations
 mqttc.loop_start()
 
 last_r = {} # keep track of duplicate messages...
@@ -77,13 +79,19 @@ while KeyboardInterrupt:
     
     # Beep if message received
     if not "Keepalive" in r:
-        #b = Beep(speed=r["Speed"])
+        b = Beep(speed=r["Speed"])
         if not last_r == r:
             #b.beep_message(r["Message"])
             last_r = r
 
+            # decode the message
+            print (r["Speed"])
+            print (r["Message"])
+            mydecoded = b.return_duration_json(r["Message"])
+
             # And send mqtt
-            infot = mqttc.publish(config.TOPIC, data_bytes, qos=2)
+            #infot = mqttc.publish(config.TOPIC, data_bytes, qos=2)
+            infot = mqttc.publish(config.TOPICDURATIONS, mydecoded, qos=2)
             infot.wait_for_publish()
     
 

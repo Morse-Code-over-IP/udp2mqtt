@@ -1,4 +1,5 @@
-import pygame, numpy, pygame.sndarray
+#import pygame, numpy, pygame.sndarray
+import json
 
 class Beep:
     def __init__(self, speed = 20):
@@ -13,32 +14,51 @@ class Beep:
         # Ref for sound: https://gist.github.com/nekozing/5774628
         sampleRate = 44100
         # 44.1kHz, 16-bit signed, mono
-        pygame.mixer.pre_init(sampleRate, -16, 1) 
-        pygame.init()
+        #pygame.mixer.pre_init(sampleRate, -16, 1) 
+        #pygame.init()
         # 4096 : the peak ; volume ; loudness
         # 440 : the frequency in hz
         # ?not so sure? if astype int16 not specified sound will get very noisy, because we have defined it as 16 bit mixer at mixer.pre_init()
         # ( probably due to int overflow resulting in non continuous sound data)
-        arr = numpy.array([4096 * numpy.sin(2.0 * numpy.pi * 440 * x / sampleRate) for x in range(0, sampleRate)]).astype(numpy.int16)
-        self.sound = pygame.sndarray.make_sound(arr)
+        #arr = numpy.array([4096 * numpy.sin(2.0 * numpy.pi * 440 * x / sampleRate) for x in range(0, sampleRate)]).astype(numpy.int16)
+        #self.sound = pygame.sndarray.make_sound(arr)
 
-    def _beep(self, symbol):
-        if symbol == ".":
-            self.sound.play(-1)
-            pygame.time.delay(self.dit_duration)
-            self.sound.stop()
-            pygame.time.delay(self.dit_duration)
-        elif symbol == "-":
-            self.sound.play(-1)
-            pygame.time.delay(self.dah_duration)
-            self.sound.stop()
-            pygame.time.delay(self.dit_duration)
-        elif symbol == "C": # EOC
-            pygame.time.delay(self.eoc_duration)
-        elif symbol == "W": # EOW
-            pygame.time.delay(self.eow_duration)
+    # def _beep(self, symbol):
+    #     if symbol == ".":
+    #         self.sound.play(-1)
+    #         pygame.time.delay(self.dit_duration)
+    #         self.sound.stop()
+    #         pygame.time.delay(self.dit_duration)
+    #     elif symbol == "-":
+    #         self.sound.play(-1)
+    #         pygame.time.delay(self.dah_duration)
+    #         self.sound.stop()
+    #         pygame.time.delay(self.dit_duration)
+    #     elif symbol == "C": # EOC
+    #         pygame.time.delay(self.eoc_duration)
+    #     elif symbol == "W": # EOW
+    #         pygame.time.delay(self.eow_duration)
 
     def beep_message(self, message):
         for s in message:
             self._beep (s)
 
+    # FIXME -> put to a separate class (or lib)
+    def return_duration_json(self, message):
+        json_string = '{"durations": []}'
+        data = json.loads(json_string)
+
+        for symbol in message:
+            if symbol == ".":
+                data['durations'].append(self.dit_duration)
+                data['durations'].append(-self.dit_duration)
+            elif symbol == "-":
+                data['durations'].append(self.dah_duration)
+                data['durations'].append(-self.dit_duration)
+            elif symbol == "C": # EOC
+                data['durations'].append(-self.eoc_duration)
+            elif symbol == "W": # EOW
+                data['durations'].append(-self.eow_duration)
+
+        updated_json_string = json.dumps(data, indent=2)
+        return updated_json_string
