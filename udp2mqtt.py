@@ -7,7 +7,6 @@ import config
 import socket
 import time
 import sys
-from beep import *
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s', )
 
@@ -66,7 +65,7 @@ last_r = {} # keep track of duplicate messages...
 
 # Main loop
 while KeyboardInterrupt:
-  time.sleep(0.2)						# anti flood
+  time.sleep(0.2) # anti flood
 
   # FIXME: ADD KEEPALIVE SIGNAL
 
@@ -77,20 +76,17 @@ while KeyboardInterrupt:
     print (r)
     sys.stdout.flush() # TODO: use logging
     
-    # Beep if message received
+    # If message received send the duration json over mqtt
     if not "Keepalive" in r:
-        b = Beep(speed=r["Speed"])
+        b = Mopp(speed=r["Speed"])
         if not last_r == r:
-            #b.beep_message(r["Message"])
             last_r = r
 
-            # decode the message
-            print (r["Speed"])
-            print (r["Message"])
+            # decode the mopp message to a json string containing the durations
             mydecoded = b.return_duration_json(r["Message"])
 
             # And send mqtt
-            #infot = mqttc.publish(config.TOPIC, data_bytes, qos=2)
+            #infot = mqttc.publish(config.TOPIC, data_bytes, qos=2) // publish raw mopp data to another topic?
             infot = mqttc.publish(config.TOPICDURATIONS, mydecoded, qos=2)
             infot.wait_for_publish()
     
