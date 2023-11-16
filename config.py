@@ -1,6 +1,6 @@
 # Configuration for UDP connections
-#SERVER_IP = "mopp_chat_server" #"127.0.0.1"  # "10.101.101.14" 
-SERVER_IP = "10.101.101.14" #"127.0.0.1"  # "" 
+SERVER_IP = "mopp_chat_server" #"127.0.0.1"  # "10.101.101.14" 
+#SERVER_IP = "10.101.101.14" #"127.0.0.1"  # "" 
 UDP_PORT = 7373
 
 # Configuration for Chat Server
