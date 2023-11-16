@@ -1,3 +1,4 @@
+0.0.7 - topic for durations array
 0.0.6 - topic changed
 0.0.5 - name of chatserver for connection
 0.0.4 - bidirectional relais
