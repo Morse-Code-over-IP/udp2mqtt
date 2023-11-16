@@ -1,2 +1,4 @@
 - one echo too much?
 - add keepalive to loop!
+- cleanup classes in beep
+- create converter for cwcom protocol
