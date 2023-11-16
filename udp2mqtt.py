@@ -66,6 +66,8 @@ last_r = {} # keep track of duplicate messages...
 while KeyboardInterrupt:
   time.sleep(0.2)						# anti flood
 
+  # FIXME: ADD KEEPALIVE SIGNAL
+
   try:
     data_bytes, addr = client_socket.recvfrom(64)
     client = addr[0] + ':' + str(addr[1])
