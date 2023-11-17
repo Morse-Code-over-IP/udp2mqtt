@@ -3,3 +3,17 @@ services:
   udp2mqtt:
     image: ghcr.io/morse-code-over-ip/udp2mqtt:latest
     restart: always
+    environment:
+      # Configuration for UDP connections
+      SERVER_IP: "mopp_chat_server" #"10.101.101.14" #"127.0.0.1" 
+      UDP_PORT: "7373"
+      # Configuration for Chat Server
+      CLIENT_TIMEOUT: "300"
+      MAX_CLIENTS: "100"
+      KEEPALIVE: "10"
+      CHAT_WPM: "20"
+      # MQTT configuration
+      MQTT_HOST: "broker.hivemq.com"
+      MQTT_PORT: "1883"
+      MQTT_TOPIC: "/moip/udp2mqtt/durations"
+

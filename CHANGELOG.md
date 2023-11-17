@@ -1,3 +1,4 @@
+0.0.10 - environment variable config
 0.0.9 - add versioned json output
 0.0.8 - move json duration string to mopp module (pip)
 0.0.7 - topic for durations array
