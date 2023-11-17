@@ -1,11 +1,13 @@
 version: '3'
 services:
   udp2mqtt:
-    image: ghcr.io/morse-code-over-ip/udp2mqtt:latest
+    #image: ghcr.io/morse-code-over-ip/udp2mqtt:latest
+    build: .
     restart: always
     environment:
       # Configuration for UDP connections
-      SERVER_IP: "mopp_chat_server" #"10.101.101.14" #"127.0.0.1" 
+      SERVER_IP: "mopp_chat_server"
+      #SERVER_IP: "10.101.101.14" #"127.0.0.1" 
       UDP_PORT: "7373"
       # Configuration for Chat Server
       CLIENT_TIMEOUT: "300"

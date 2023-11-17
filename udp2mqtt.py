@@ -57,7 +57,7 @@ mqttc.on_connect = on_connect
 mqttc.on_publish = on_publish
 mqttc.on_subscribe = on_subscribe
 mqttc.connect(config.MQTT_HOST, config.MQTT_PORT, 60)
-mqttc.subscribe(config.TOPIC, 0)
+mqttc.subscribe(config.MQTT_TOPIC, 0)
 # FIXME: Listen to durations
 mqttc.loop_start()
 
@@ -83,15 +83,14 @@ while KeyboardInterrupt:
             last_r = r
 
             # decode the mopp message to a json string containing the durations
-            mydecoded = b.return_duration_json(r["Message"])
-            payload = {
-                "version": config.MORSE_JSON_VERSION,
-            }
-            payload.update(mydecoded)
+            mydecoded = json.loads(b.return_duration_json(r["Message"]))
+
+            mydecoded.update({ "version": config.MORSE_JSON_VERSION, })
+            print (mydecoded)
+            sys.stdout.flush() # TODO: use logging
 
             # And send mqtt
-            #infot = mqttc.publish(config.TOPIC, data_bytes, qos=2) // publish raw mopp data to another topic?
-            infot = mqttc.publish(config.TOPICDURATIONS, payload, qos=2)
+            infot = mqttc.publish(config.MQTT_TOPIC, json.dumps(mydecoded), qos=2)
             infot.wait_for_publish()
     
 
