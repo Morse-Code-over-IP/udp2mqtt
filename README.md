@@ -6,7 +6,7 @@ Status: *WIP*
 + Install and upgrade deps `pip3 install -r requirements-test.txt -U`
 
 # Durations testing
-+ `mosquitto_pub -h broker.hivemq.com -t  /moip/udp2mqtt/durations -m '{ "durations": [60, -60, 180, -60, 180, -60] }'`
++ `mosquitto_pub -h broker.hivemq.com -t  /moip/udp2mqtt/durations -m '{ "durations": [60, -60, 180, -60, 380, -60] , "version": 1}'`
 + `mosquitto_sub -h broker.hivemq.com -t  /moip/udp2mqtt/durations`
 
 # Free accounts
