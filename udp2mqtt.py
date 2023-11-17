@@ -18,22 +18,33 @@ client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 client_socket.connect((config.SERVER_IP, config.UDP_PORT))  # connect to the server
 client_socket.send(mopp.mopp(20,'hi')) # Register chat server
 
+mqtt_client_unique_identifier = "123123123"
 
 def on_connect(mqttc, obj, flags, rc):
-    print("rc: " + str(rc))
+    print("MQTT Connected " + str(rc))
     sys.stdout.flush() # TODO: use logging
 
 def on_message(mqttc, obj, msg):
-    print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+    print("< MQTT Received: " + msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+    myjson = json.loads(msg.payload)
 
-    r = mopp.decode_message(msg.payload)
-    print (r)
+    if "version" in myjson and myjson["version"] == 1:
+        print ("MQTT: Version supported")
+        if "relais" in myjson and myjson["relais"] == mqtt_client_unique_identifier:
+            print ("MQTT: Received my own message")
+        else:
+            print ("> UDP Sending: --- NOT IMPLEMENTED YET VARIABLE LENGTH TO MOPP PROBLEM!") # + str(msg.payload)) # TODO
+            print (msg.payload)
+            #r = mopp.decode_message(msg.payload)
+            #client_socket.send(msg.payload)
+    else:
+        print ("MQTT: Wrong version")
+        return
+    
     sys.stdout.flush() # TODO: use logging
 
-    client_socket.send(msg.payload)
-
 def on_publish(mqttc, obj, mid):
-    print("mid: " + str(mid))
+    print("> MQTT Sending: " + str(mid))
     sys.stdout.flush() # TODO: use logging
     pass
 
@@ -57,7 +68,7 @@ mqttc.on_connect = on_connect
 mqttc.on_publish = on_publish
 mqttc.on_subscribe = on_subscribe
 mqttc.connect(config.MQTT_HOST, config.MQTT_PORT, 60)
-# mqttc.subscribe(config.MQTT_TOPIC, 0) # FIXME: listen
+mqttc.subscribe(config.MQTT_TOPIC, 0) # FIXME: listen
 mqttc.loop_start()
 
 last_r = {} # keep track of duplicate messages...
@@ -72,7 +83,7 @@ while KeyboardInterrupt:
     data_bytes, addr = client_socket.recvfrom(64)
     client = addr[0] + ':' + str(addr[1])
     r = mopp.decode_message(data_bytes)
-    print (r)
+    print ("< Received UDP: " + str(r))
     sys.stdout.flush() # TODO: use logging
     
     # If message received send the duration json over mqtt
@@ -84,12 +95,12 @@ while KeyboardInterrupt:
             # decode the mopp message to a json string containing the durations
             mydecoded = json.loads(b.return_duration_json(r["Message"]))
 
-            mydecoded.update({ "version": config.MORSE_JSON_VERSION, })
-            print (mydecoded)
+            mydecoded.update({ "version": config.MORSE_JSON_VERSION, "relais": mqtt_client_unique_identifier}) #FIXME: V2 for relais?
+            print ("  Decoded message as " + str(mydecoded))
             sys.stdout.flush() # TODO: use logging
 
             # And send mqtt
-            infot = mqttc.publish(config.MQTT_TOPIC, json.dumps(mydecoded), qos=2)
+            infot = mqttc.publish(config.MQTT_TOPIC, json.dumps(mydecoded), qos=1, retain=False)
             infot.wait_for_publish()
     
 

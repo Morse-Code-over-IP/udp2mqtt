@@ -2,3 +2,4 @@
 - add keepalive to loop!
 - cleanup classes in beep
 - create converter for cwcom protocol
+- implement variable length to mopp encoder
