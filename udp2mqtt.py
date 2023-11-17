@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.DEBUG, format='%(message)s', )
 mopp = Mopp()
 
 # UDP
-print ("Connecting to UDP")
+print ("Connecting to UDP: " + config.SERVER_IP)
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 client_socket.connect((config.SERVER_IP, config.UDP_PORT))  # connect to the server
 client_socket.send(mopp.mopp(20,'hi')) # Register chat server
@@ -49,7 +49,7 @@ def on_log(mqttc, obj, level, string):
 
 
 # MQTT
-print ("Connecting to MQTT")
+print ("Connecting to MQTT " + config.MQTT_HOST)
 sys.stdout.flush() # TODO: use logging
 mqttc = paho.Client()
 mqttc.on_message = on_message
@@ -57,8 +57,7 @@ mqttc.on_connect = on_connect
 mqttc.on_publish = on_publish
 mqttc.on_subscribe = on_subscribe
 mqttc.connect(config.MQTT_HOST, config.MQTT_PORT, 60)
-mqttc.subscribe(config.MQTT_TOPIC, 0)
-# FIXME: Listen to durations
+# mqttc.subscribe(config.MQTT_TOPIC, 0) # FIXME: listen
 mqttc.loop_start()
 
 last_r = {} # keep track of duplicate messages...
