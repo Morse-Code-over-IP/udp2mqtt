@@ -15,3 +15,5 @@ MQTT_PORT = 1883
 
 TOPIC = "/moip/udp2mqtt/mopp"
 TOPICDURATIONS = "/moip/udp2mqtt/durations"
+
+MORSE_JSON_VERSION = 1

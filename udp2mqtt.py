@@ -84,10 +84,14 @@ while KeyboardInterrupt:
 
             # decode the mopp message to a json string containing the durations
             mydecoded = b.return_duration_json(r["Message"])
+            payload = {
+                "version": config.MORSE_JSON_VERSION,
+            }
+            payload.update(mydecoded)
 
             # And send mqtt
             #infot = mqttc.publish(config.TOPIC, data_bytes, qos=2) // publish raw mopp data to another topic?
-            infot = mqttc.publish(config.TOPICDURATIONS, mydecoded, qos=2)
+            infot = mqttc.publish(config.TOPICDURATIONS, payload, qos=2)
             infot.wait_for_publish()
     
 
