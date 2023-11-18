@@ -17,3 +17,4 @@ MQTT_TOPIC = os.environ.get('MQTT_TOPIC', "/moip/udp2mqtt/durations")
 
 # Internal configuration with code dependencies
 MORSE_JSON_VERSION = 1
+MQTT_CLIENT_UNIQUE_IDENTIFIER = "123123123"

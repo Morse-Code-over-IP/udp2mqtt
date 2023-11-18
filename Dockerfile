@@ -22,6 +22,7 @@ ENV CHAT_WPM "20"
 ENV MQTT_HOST "broker.hivemq.com"
 ENV MQTT_PORT "1883"
 ENV MQTT_TOPIC "/moip/udp2mqtt/durations"
+ENV MQTT_CLIENT_UNIQUE_IDENTIFIER "123123"
 
 
 ENTRYPOINT [ "python3", "./udp2mqtt.py" ]
