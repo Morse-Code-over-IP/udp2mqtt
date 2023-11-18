@@ -20,7 +20,7 @@ def on_message(mqttc, obj, msg):
 
     # Beep if message received
     if not "Keepalive" in r:
-        b = Beep(speed=r["Speed"])
+        b = Beep(speed=r["Speed"]) # FIXME
         b.beep_message(r["Message"])
 
 def on_publish(mqttc, obj, mid):
