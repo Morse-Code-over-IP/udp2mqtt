@@ -54,6 +54,46 @@ def normalize_duration_timings(duration_array=my_test_bug):
 
     return result
 
+
+def encode_dit_dah(ditdah): # FIXME: Make a first function to convert character to .- language and a 2nd to convert to 01010 and a final one to convert to mopp binary
+    """takes a string of characters and returns a wordbuffer"""
+    wordbuffer = []
+    for s in ditdah:
+        #if s == " ":
+        #    wordbuffer.append("11") # SPACE EOW # FIXME
+        if s == "-":
+            wordbuffer.append("10")
+        if s == ".":
+            wordbuffer.append("01")
+        if s == " ":
+            wordbuffer.append("00") # SPACE EOC
+    #if len(wordbuffer) > 0:
+    #    wordbuffer.pop()
+    wordbuffer.append("11")
+    return wordbuffer
+
+def encode_mopp_binary(zeroone, speed=20, serial=1): # FIXME move to lib
+        # FIXME: use self.serial
+        m = '01'				# protocol version
+        m += bin(serial)[2:].zfill(6)
+        m += bin(speed)[2:].zfill(6)
+
+        n = ''.join(zeroone)
+        m += n
+
+        m = m.ljust(int(8*ceil(len(m)/8.0)),'0')
+
+        #print (m, " ENCODER") # FIXME
+        print (". " + m)
+
+        res = ''
+        for i in range (0, len(m), 8):
+            #print (m[i:i+8], bytes(chr(int(m[i:i+8],2)),"latin_1"), i, " ENCODER")
+            res += chr(int(m[i:i+8],2))
+
+        #self.serial += 1
+        return bytes(res,'latin_1') # WATCH OUT: UNICODE MAKES MULTI-BYTES 
+
 #### TESTING
 
 
@@ -78,7 +118,18 @@ def on_message(mqttc, obj, msg):
             print ("MQTT: Received my own message")
         else:
             print ("> UDP Sending: --- NOT IMPLEMENTED YET VARIABLE LENGTH TO MOPP PROBLEM!") # + str(msg.payload)) # TODO
-            print (msg.payload)
+            #print ("  " + msg.payload)
+            if "durations" in myjson:
+                
+                t = normalize_duration_timings(duration_array=myjson["durations"])
+                print ("  " + str(t))
+                print ("  " + str(t["morse_code_normalized"]))
+                v = encode_dit_dah(str(t["morse_code_normalized"]))
+                print ("  " + str(v))
+                w = encode_mopp_binary(v, speed=int(t["wpm_estimate"]), serial=1)
+                client_socket.send(w)
+                sys.stdout.flush() # TODO: use logging
+
             #r = mopp.decode_message(msg.payload)
             #client_socket.send(msg.payload)
     else:
@@ -146,6 +197,9 @@ while KeyboardInterrupt:
             # And send mqtt
             infot = mqttc.publish(config.MQTT_TOPIC, json.dumps(mydecoded), qos=1, retain=False)
             infot.wait_for_publish()
+        else:
+            print ("  Skipped duplicate")
+
     
 
 
