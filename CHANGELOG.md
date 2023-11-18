@@ -1,3 +1,4 @@
+0.0.12 - primer for sending corrected timings from cwcom
 0.0.11 - done: mopp udp to mqtt works
 0.0.10 - environment variable config
 0.0.9 - add versioned json output

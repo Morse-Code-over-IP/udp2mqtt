@@ -7,6 +7,8 @@ Status: *WIP*
 
 # Durations testing
 + `mosquitto_pub -h broker.hivemq.com -t  /moip/udp2mqtt/durations -m '{ "durations": [60, -60, 180, -60, 380, -60] , "version": 1}'`
++ Testing with bug (CWCOM) ` mosquitto_pub -h broker.hivemq.com -t  /moip/udp2mqtt/durations -m '{ "durations": [ -347, 145, -183, 51, -160, 51, -47, 47, -51, 47, -211, 144 ]  , "version": 1}'`
+
 + `mosquitto_sub -h broker.hivemq.com -t  /moip/udp2mqtt/durations`
 
 # Free accounts
