@@ -24,10 +24,15 @@ def normalize_duration_timings(duration_array=my_test_bug):
 
     positive_durations = [duration for duration in duration_array if duration > 0]
     average_duration = float(sum(positive_durations))/float(len(positive_durations)) 
-
-    # Estimate words per minute and calculate dit duration
-    average_dit_duration = sum([duration for duration in duration_array[first_non_pause_index:] if duration > 0]) / len([duration for duration in duration_array[first_non_pause_index:] if duration > 0])
+    
+    # Estimate words per minute 
+    threshold = average_duration
+    possible_dits = [duration for duration in positive_durations if duration < threshold]
+    possible_dahs = [duration for duration in positive_durations if duration >= threshold]
+    average_dit_duration = ( sum (possible_dits ) + 1/3.0 * sum(possible_dahs) ) / len (positive_durations)
     wpm_estimate = int(1200 / average_dit_duration) if average_dit_duration > 0 else 0
+
+    # Calculate estimated dit and dah length
     dit_length_estimate = int(1200 / wpm_estimate)
     dah_length_estimate = int(3*dit_length_estimate)
 
