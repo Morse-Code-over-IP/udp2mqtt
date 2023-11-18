@@ -29,7 +29,7 @@ def on_message(mqttc, obj, msg):
     myjson = json.loads(msg.payload)
 
     if "version" in myjson and myjson["version"] == 1:
-        print ("MQTT: Version supported")
+        print ("MQTT: Protocol version supported")
         if "relais" in myjson and myjson["relais"] == mqtt_client_unique_identifier:
             print ("MQTT: Received my own message")
         else:
@@ -38,7 +38,7 @@ def on_message(mqttc, obj, msg):
             #r = mopp.decode_message(msg.payload)
             #client_socket.send(msg.payload)
     else:
-        print ("MQTT: Wrong version")
+        print ("MQTT: Protocol version NOT supported")
         return
     
     sys.stdout.flush() # TODO: use logging
@@ -57,6 +57,44 @@ def on_log(mqttc, obj, level, string):
     sys.stdout.flush() # TODO: use logging
 
 
+####### TESTING
+def normalize_duration_timings(duration_array=my_test_bug):
+    # Duration array representing Morse code tones (with imperfect timing)
+
+    # Find the position of the first non-pause element
+    first_non_pause_index = next((i for i, duration in enumerate(duration_array) if duration > 0), None)
+
+    positive_durations = [duration for duration in duration_array if duration > 0]
+    average_duration = float(sum(positive_durations))/float(len(positive_durations)) 
+
+    # Estimate words per minute and calculate dit duration
+    average_dit_duration = sum([duration for duration in duration_array[first_non_pause_index:] if duration > 0]) / len([duration for duration in duration_array[first_non_pause_index:] if duration > 0])
+    wpm_estimate = int(1200 / average_dit_duration) if average_dit_duration > 0 else 0
+    dit_length_estimate = int(1200 / wpm_estimate)
+    dah_length_estimate = int(3*dit_length_estimate)
+
+    # Define a threshold to distinguish between Dits and Dahs
+    threshold = average_duration # 3 * average_dit_duration 
+    #print (threshold)
+
+    # Convert the array to Morse code string
+    morse_code = ""
+    normalized_durations = []
+    for duration in duration_array[first_non_pause_index:]:
+        if duration > 0 and duration <= threshold:  # Dit
+            morse_code += "."
+            normalized_durations.append(dit_length_estimate)
+            normalized_durations.append(-dit_length_estimate)
+        elif duration >= threshold:  # Dah
+            morse_code += "-"
+            normalized_durations.append(dah_length_estimate)
+            normalized_durations.append(-dit_length_estimate)
+        elif duration < 0 and abs(duration) >= threshold: # Pause
+            morse_code += " " # FIXME: more types of pauses (word, character, ...)
+
+    result = {"wpm_estimate": wpm_estimate, "morse_code_normalized": morse_code, "normalized_durations": normalized_durations}
+
+    return result
 
 
 # MQTT
