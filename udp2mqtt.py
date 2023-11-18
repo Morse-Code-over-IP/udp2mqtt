@@ -18,7 +18,7 @@ client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 client_socket.connect((config.SERVER_IP, config.UDP_PORT))  # connect to the server
 client_socket.send(mopp.mopp(20,'hi')) # Register chat server
 
-mqtt_client_unique_identifier = "123123123"
+mqtt_client_unique_identifier = "123123123" # FIXME
 
 def on_connect(mqttc, obj, flags, rc):
     print("MQTT Connected " + str(rc))
